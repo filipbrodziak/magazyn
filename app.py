@@ -701,13 +701,14 @@ SZABLON_KATEGORIE = r"""
 
 
 # ---------- START ----------
+# Tworzenie bazy przy starcie (Render)
+with app.app_context():
+    db.create_all()
+    if not Kategoria.query.first():
+        for nazwa in ["Znaki A (ostrzegawcze)", "Znaki B (nakazu)", "Znaki D (informacyjne)"]:
+            db.session.add(Kategoria(nazwa=nazwa))
+        db.session.commit()
+
+# Tylko lokalnie
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-
-        if not Kategoria.query.first():
-            for nazwa in ["Znaki A (ostrzegawcze)", "Znaki B (nakazu)", "Znaki D (informacyjne)"]:
-                db.session.add(Kategoria(nazwa=nazwa))
-            db.session.commit()
-
-    app.run()
+    app.run(debug=True)
